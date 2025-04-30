@@ -36,7 +36,7 @@ echo "$NETWORKS" | jq -c '.[]' | while read -r network; do
   VLANS=$(curl -s -H "X-Cisco-Meraki-API-Key: $MERAKI_API_KEY" \
     https://api.meraki.com/api/v1/networks/$NETWORK_ID/vlans)
 
-  echo "$VLANS" | jq -c '.[]' | while read -r vlan; do
+  echo "$VLANS" | jq -c '.[]' | while read -r mx_vlans; do
     VLAN_ID=$(echo "$vlan" | jq -r '.id')
     VLAN_NAME=$(echo "$vlan" | jq -r '.name // .id' | tr ' ' '_' | tr -cd '[:alnum:]_')
 

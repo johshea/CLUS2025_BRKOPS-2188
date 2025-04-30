@@ -1,3 +1,16 @@
+terraform {
+  required_providers {
+    meraki = {
+      source = "cisco-open/meraki"
+      version = "1.1.2-beta"
+    }
+  }
+}
+
+provider "meraki" {
+  api_key = var.api_key
+}
+
 resource "meraki_devices_switch_ports" "port" {
   for_each = { for p in var.ports : "${p.device_serial}:${p.port_id}" => p }
 

@@ -1,5 +1,15 @@
+variable "api_key" {
+  description = "API key for Meraki"
+  type        = string
+  sensitive   = true
+}
 
-variable "network" {
-  description = "Network object"
-  type        = any
+variable "org_id" {
+  description = "Meraki Organization ID"
+  type        = string
+}
+
+variable "network_name" {
+  type        = string
+  description = ""
 }

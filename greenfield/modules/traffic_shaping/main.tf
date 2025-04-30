@@ -1,3 +1,4 @@
+
 resource "meraki_networks_appliance_traffic_shaping" "global" {
   network_id = var.network_id
   global_bandwidth_limits = {

@@ -1,3 +1,7 @@
+local {
+  devices = yamldecode(file("./network_${var.network_name}/devices.yaml"))
+}
+
 resource "meraki_device" "this" {
   serial          = var.device.serial
   network_id      = var.device.network_id

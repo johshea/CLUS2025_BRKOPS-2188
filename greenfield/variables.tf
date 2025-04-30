@@ -1,3 +1,4 @@
+
 variable "api_key" {
   description = "API key for Meraki"
   type        = string
@@ -7,4 +8,9 @@ variable "api_key" {
 variable "org_id" {
   description = "Meraki Organization ID"
   type        = string
+}
+
+variable "network_name" {
+  type        = string
+  description = ""
 }

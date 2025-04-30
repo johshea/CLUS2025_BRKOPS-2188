@@ -1,22 +1,20 @@
-variable "network_id" {
-  description = "The Meraki Network ID where SSIDs are configured"
+variable "api_key" {
+  description = "API key for Meraki"
+  type        = string
+  sensitive   = true
+}
+
+variable "org_id" {
+  description = "Meraki Organization ID"
   type        = string
 }
 
-variable "ssids" {
-  description = "List of SSID configurations"
-  type = list(object({
-    number             = number
-    name               = string
-    enabled            = bool
-    auth_mode          = string
-    psk                = optional(string)
-    ip_assignment_mode = string
-    default_vlan_id    = optional(number)
-    radius_servers     = optional(list(object({
-      host   = string
-      port   = number
-      secret = string
-    })))
-  }))
+variable "network_name" {
+  type        = string
+  description = ""
+}
+
+variable "network_id" {
+  description = "The network ID to assign VLANs to"
+  type        = string
 }
