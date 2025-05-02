@@ -49,6 +49,8 @@ resource "time_sleep" "wait_20_seconds" {
   depends_on = [time_sleep.wait_20_seconds]
 }
 
+
+
 '''
 
 tf_provider = '''terraform {
