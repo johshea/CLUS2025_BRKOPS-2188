@@ -1,2 +1,2 @@
 #api_key = "YOUR_MERAKI_API_KEY_HERE"
-org_id  = "625437398251079063"
+org_id  = "Your_MERAKI_ORG_ID_HERE"
