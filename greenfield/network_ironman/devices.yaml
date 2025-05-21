@@ -16,10 +16,10 @@ devices:
         #- access
         #- floor-2
 
-    #- name: Friday
-      #model: MR-36
-      #serial: Q2AP-AAAA-BBBB
-      #lanIp: 172.16.50.3
-      #tags:
-        #- wifi
-        #- floor-1
+    - name: Friday
+      model: MR-36
+      serial: Q5BD-5GWJ-RRNE
+      lanIp: 172.16.50.3
+      tags:
+        - wifi
+        - floor-1
