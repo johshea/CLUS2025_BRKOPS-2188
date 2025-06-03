@@ -23,19 +23,37 @@ import yaml
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Meraki API Script")
-    parser.add_argument("--api-key", "-k", required=True, help="Your Meraki API Key")
-    parser.add_argument("--org-id", "-o", required=True, help="Meraki Organization ID")
+    parser.add_argument("--api_key", "-k", required=True, help="Your Meraki API Key")
+    #parser.add_argument("--org_id", "-o", required=True, help="Meraki Organization ID")
+    parser.add_argument("--org_name", "-n", required=False, help="Meraki Organization Name")
     return parser.parse_args()
 
 
 args = parse_args()
 
+dashboard = meraki.DashboardAPI(args.api_key, print_console=False, suppress_logging=True)
+
+orgs = dashboard.organizations.getOrganizations()
+
+for org in orgs:
+    if org.get("name", "").lower() == args.org_name.lower():
+        org_id = org.get("id")
+        break
+
+org = next((o for o in orgs if o['name'] == args.org_name), None)
+if not org:
+    print(f"Organization {args.org_name} not found.")
+
+
+
 API_KEY = args.api_key
-ORG_ID = args.org_id
+ORG_ID = org['id']
+ORG_NAME = args.org_name
 BASE_DIR = "./"
 MODULES_DIR = os.path.join(BASE_DIR, "modules")
 OUTPUT_DIR = os.path.join(BASE_DIR, "data")
 YAML_DIR = os.path.join(OUTPUT_DIR, "yaml")
+
 
 dashboard = meraki.DashboardAPI(API_KEY, print_console=False, suppress_logging=True)
 
@@ -67,19 +85,29 @@ with open(main_tf_path, "w") as main_tf:
     # Find the org with the matching ID
     ORG_NAME = next((o for o in ORGS if o["id"] == ORG_ID), None)
     org_safe_name = ORG_NAME["name"].replace(" ", "_").replace("/", "_")
+    org_data_path = os.path.join(org_safe_name, "Organization")
+
     org_data = {
         "name": ORG_NAME,
-        "devices": []
+        "devices": [],
+        "dns_profiles": [],
+        "dns_assignments": [],
+        "dns_splitprofiles": [],
+        "dns_splitassignments": [],
+        "dns_localrecords": [],
+        "webhook_Receivers": []
+
+
     }
 
-    os.makedirs(YAML_DIR + '/' + org_safe_name, exist_ok=True)
+    os.makedirs(YAML_DIR + '/' + org_data_path, exist_ok=True)
+
 
     org_devices = dashboard.organizations.getOrganizationDevices(ORG_ID)
 
-    yaml_file = f"{YAML_DIR}/{org_safe_name}/Organization.yaml"
+    yaml_file = f"{YAML_DIR}/{org_data_path}/Organization.yaml"
     with open(yaml_file, "w") as f:
         yaml.dump(org_devices, f, sort_keys=False)
-
 
     networks = dashboard.organizations.getOrganizationNetworks(ORG_ID)
     print(f"🔍 Found {len(networks)} networks...")
@@ -98,22 +126,59 @@ with open(main_tf_path, "w") as main_tf:
             "ssids": [],
             "firewallRules": [],
             "switchPorts": [],
-            "wirelessSettings": {}
+            "wirelessSettings": [],
+            "webhook_receivers": [],
+            "alert_settings": []
         }
 
         yaml_file = f"{YAML_DIR}/{org_safe_name}/{net_safe_name}/{net_safe_name}_{net_id}_net_settings.yaml"
         with open(yaml_file, "w") as f:
             yaml.dump(net, f, sort_keys=False)
 
-        #try:
-            #network_data["devices"] = dashboard.networks.getNetworkDevices(net_id)
-        #except: pass
+        try:
+            for device in org_devices:
+                if device["networkId"] == net["id"]:
+                    network_data["devices"].append({
+                        "networkId": device["networkId"],
+                        "productType": device["productType"],
+                        "model": device["model"],
+                        "mac": device["mac"],
+                        "serial": device["serial"],
+                        "firmware": device["firmware"],
+                        "address": device["address"]
+                    })
+
+            yaml_file = f"{YAML_DIR}/{org_safe_name}/{net_safe_name}/{net_safe_name}_{net_id}_devices.yaml"
+            with open(yaml_file, "w") as f:
+                yaml.dump(network_data["devices"], f, sort_keys=False)
+
+        except: pass
+
+
+
+
         try:
             network_data["vlans"] = dashboard.appliance.getNetworkApplianceVlans(net_id)
 
             yaml_file = f"{YAML_DIR}/{org_safe_name}/{net_safe_name}/{net_safe_name}_{net_id}_mx_vlans.yaml"
             with open(yaml_file, "w") as f:
                 yaml.dump(network_data["vlans"], f, sort_keys=False)
+        except: pass
+
+        try:
+            network_data["webhook_receivers"] = dashboard.networks.getNetworkWebhooksHttpServers(net_id)
+
+            yaml_file = f"{YAML_DIR}/{org_safe_name}/{net_safe_name}/{net_safe_name}_{net_id}_webhook_receivers.yaml"
+            with open(yaml_file, "w") as f:
+                yaml.dump(network_data["webhook_receivers"], f, sort_keys=False)
+        except: pass
+
+        try:
+            network_data["alert_settings"] = dashboard.networks.getNetworkAlertsSettings(net_id)
+
+            yaml_file = f"{YAML_DIR}/{org_safe_name}/{net_safe_name}/{net_safe_name}_{net_id}_alert_settings.yaml"
+            with open(yaml_file, "w") as f:
+                yaml.dump(network_data["alert_settings"], f, sort_keys=False)
         except: pass
 
         try:
@@ -135,7 +200,7 @@ with open(main_tf_path, "w") as main_tf:
 
         try:
             for device in network_data["devices"]:
-                if "switch" in device.get("model", "").lower():
+                if "switch" in device.get("productType", "").lower():
                     ports = dashboard.switch.getDeviceSwitchPorts(device["serial"])
                     network_data["switchPorts"].append({
                         "serial": device["serial"],
