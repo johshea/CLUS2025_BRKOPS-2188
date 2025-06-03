@@ -32,7 +32,7 @@ Manage an entire Cisco Meraki Organization with Terraform:
 - `tfstate_to_yaml.py - converst a JSON based Terraform state file to a yaml file for use in other platforms.
 
 ## Workspaces
-- The entire brownfield scaffolding (terraform, modules, data ...) will be created the first time by running
+- The entire Workspaces scaffolding (terraform, modules, data ...) will be created the first time by running
   the import_meraki.py script found in the directory. To execute:
   
           
