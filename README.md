@@ -18,7 +18,10 @@ Manage an entire Cisco Meraki Organization with Terraform:
 ## Brownfield
 - The entire brownfield scaffolding (terraform, modules, data ...) will be created the first time by running
   the import_meraki.py script found in the directory. To execute:
-  ''''python3 import_meraki.py --api_key <yourApiKey> --org_name <yourOrgName>''''
+  
+          
+          python3 import_meraki.py --api_key <yourApiKey> --org_name <yourOrgName>
+          
 
 - Once created you will have a fully functional terraform environment based on your actual data.
   - Terraform init is completed by the script
@@ -31,7 +34,10 @@ Manage an entire Cisco Meraki Organization with Terraform:
 ## Workspaces
 - The entire brownfield scaffolding (terraform, modules, data ...) will be created the first time by running
   the import_meraki.py script found in the directory. To execute:
-  ''''python3 import_meraki_workspace.py --api_key <<yourApiKey>> --org_name <<yourOrgName>> --output_dir ./''''
+  
+          
+            python3 import_meraki_workspace.py --api_key <yourApiKey> --org_name <yourOrgName> --output_dir ./
+          
 
   - Once created you will have a fully functional terraform environment based on your actual data with each network found created as a  workspace.
 
