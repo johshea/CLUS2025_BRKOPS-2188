@@ -1,7 +1,7 @@
 devices:
     - name: IronMonger
       model: MX67
-      serial: Q2KY-Q2Q3-YDXZ
+      serial: 
       lanIp: 172.16.50.1
       tags:
         - edge
@@ -10,7 +10,7 @@ devices:
   #switch:
     #- name: Switch-2
       #model: MS120-48
-      #serial: Q2YY-YYYY-YYYY
+      #serial: 
       #lanIp: 172.16.50.2
       #tags:
         #- access
@@ -18,7 +18,7 @@ devices:
 
     - name: Friday
       model: MR-36
-      serial: Q5BD-5GWJ-RRNE
+      serial: 
       lanIp: 172.16.50.3
       tags:
         - wifi
