@@ -29,7 +29,7 @@ Manage an entire Cisco Meraki Organization with Terraform:
   - Terraform apply
  
 ## Scripts
-- `tfstate_to_yaml.py - converst a JSON based Terraform state file to a yaml file for use in other platforms.
+- `tfstate_to_yaml.py - converts a JSON based Terraform state file to a yaml file for use in other platforms (ex Ansible).
 
 ## Workspaces
 - The entire Workspaces scaffolding (terraform, modules, data ...) will be created the first time by running
